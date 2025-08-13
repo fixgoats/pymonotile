@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from qutip import basis
 
@@ -46,10 +46,11 @@ for i in range(N):
             reordered[i, j] = evals[idx]
             idx += 1
 
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-np.savetxt("squarequtip.txt", evals)
+np.savetxt("squarefreq.txt", evals)
+np.savetxt("squareigvecs.txt", evals)
 
-ax.plot_surface(kxv, kyv, reordered)
-
-fig.savefig("square.pdf")
+# fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+# ax.plot_surface(kxv, kyv, reordered)
+#
+# fig.savefig("square.pdf")
