@@ -50,8 +50,18 @@ for i in range(N):
 dk = np.pi / N
 bleh = np.arange(0, np.pi, dk)
 r_basis = [basis(N * N, j * N + i) for i in range(N) for j in range(N)]
-k_basis = [sum([np.exp(1j * (kx * j + ky * j)) basis(N * N, j * N + i) for i in range(N) for j in range(N)]) for kx in bleh for ky in bleh]
-
+k_basis = [
+    (1 / N)
+    * sum(
+        [
+            np.exp(1j * (kx * i + ky * j)) * basis(N * N, j * N + i)
+            for i in range(N)
+            for j in range(N)
+        ]
+    )
+    for kx in bleh
+    for ky in bleh
+]
 
 np.savetxt("squarefreq.txt", evals)
 np.savetxt("squareigvecs.txt", evals)
