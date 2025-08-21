@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from qutip import basis, expect
 import numpy as np
 
-N = 20
+N = 40
 
 kx = np.linspace(0, np.pi, N)
 
@@ -52,33 +52,46 @@ bleh = np.arange(0, np.pi, dk)
 r_basis = [basis(N * N, j * N + i) for i in range(N) for j in range(N)]
 # k_basis = np.array([[
 #     (1 / N)
-#     * 
+#     *
 #     )
 #     for kx in bleh]
 #     for ky in bleh
 # ])
 
 
-es = np.array([
-              [
-              expect(h, sum(
+es = np.array(
+    [
         [
-            np.exp(1j * (kx * i + ky * j)) * basis(N * N, j * N + i)
-            for i in range(N)
-            for j in range(N)
-        ])/ N)  for kx in bleh]
-              for ky in bleh]
-              )
+            expect(
+                h,
+                sum(
+                    [
+                        np.exp(1j * (kx * i + ky * j)) * basis(N * N, j * N + i)
+                        for i in range(N)
+                        for j in range(N)
+                    ]
+                )
+                / N,
+            )
+            for kx in bleh
+        ]
+        for ky in bleh
+    ]
+)
 print(es)
 
-# np.savetxt("squarefreq.txt", evals)
-# np.savetxt("squareigvecs.txt", evals)
+np.savetxt("squarefreq.txt", es)
+# np.savetxt("squareigvecs.txt", )
 
 analytical = -2 * (np.cos(kxv) + np.cos(kyv))
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-ax.plot_surface(kxv, kyv, es)
-ax.plot_surface(kxv, kyv, analytical)
-#
+ax.plot_surface(kxv, kyv, es, label="numerical")
+ax.plot_surface(kxv, kyv, analytical, label="theoretical")
+ax.legend()
+ax.set_xlabel("$k_x$")
+ax.set_ylabel("$k_y$")
+ax.set_zlabel("$E$")
+
 plt.show()
 fig.savefig("square.pdf")
