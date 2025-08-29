@@ -1,7 +1,8 @@
 from pythtb import tb_model
 import matplotlib.pyplot as plt
 from functools import cache
-from numba import njit, typed
+import numba as nb
+from numba.typed import List
 
 
 @cache
@@ -13,31 +14,29 @@ def fibwordgen(n):
     return fibwordgen(n - 1) + fibwordgen(n - 2)
 
 
-@njit
-def cumsum(l):
-    s = None
-    retl = [0] * len(l)
-    for i, e in enumerate(l):
-        if i == 0:
-            s = e
-            retl[0] = e
-        else:
-            s += e
-            retl[i] = s
+@nb.njit(nb.types.ListType(nb.float64)(nb.types.ListType(nb.int64)))
+def word_to_loc(l):
+    retl = List([0.0] * len(l))
+    s = 0.0
+    S = sum(l)
+    for i, e in enumerate(l[0:-1]):
+        s += e / S
+        retl[i + 1] = s
     return retl
 
 
-@njit
+@nb.njit
 def wrapnums(l):
     return [[e] for e in l]
 
 
-ninthgen = fibwordgen(14)
-typed_ninthgen = typed.List(ninthgen)
-print(cumsum(typed_ninthgen))
+ninthgen = fibwordgen(8)
+typed_ninthgen = List(ninthgen)
+print(nb.typeof(typed_ninthgen))
+locations = word_to_loc(typed_ninthgen)
 
 lat = [[sum(ninthgen)]]
-orb = wrapnums(cumsum(typed_ninthgen))
+orb = wrapnums(word_to_loc(typed_ninthgen))
 
 chain = tb_model(1, 1, lat, orb)
 for i, e in enumerate(ninthgen):
@@ -46,8 +45,6 @@ for i, e in enumerate(ninthgen):
         chain.set_hop(t, i, 0, [1])
     else:
         chain.set_hop(t, i, i + 1, [0])
-
-chain.display()
 
 (k_vec, k_dist, k_node) = chain.k_path("full", 100)
 k_label = ("$0$", r"$\pi$", r"$2\pi$")
