@@ -2,32 +2,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 
-# a = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+# points = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 # H = np.array([
 #     [0, 1, 1, 0],
 #     [1, 0, 0, 1],
 #     [1, 0, 0, 1],
 #     [0, 1, 1, 0]
 #     ])
-points = np.loadtxt("hexgrid.txt")
-print(points)
-H = np.loadtxt("circgrapheneH.txt")
+points = np.loadtxt("smallmonotilepoints.txt")
+# print(points)
+H = np.loadtxt("smallmonotileH.txt")
 
 connections = []
 
 for j in range(np.shape(points)[0]):
-    connections.append([np.array([points[j, 0]]), np.array(points[j, 1])])
+    connections.append([])
     for i in range(np.shape(points)[0]):
         if H[j, i] != 0:
-            connections[j][0] = np.append(connections[j][0], [points[i,0]]) 
-            connections[j][1] = np.append(connections[j][1], [points[i,1]]) 
+            connections[j].append(i) 
 
 print(connections)
 
 fig, ax = plt.subplots()
 ax.scatter(points[:,0], points[:,1])
 
-for conn in connections:
-    ax.plot(conn[0], conn[1])
+for j in range(len(points)):
+    for i in connections[j]:
+        ax.plot([points[j][0], points[i][0]], [points[j][1], points[i][1]])
+        #ax.quiver(points[j][0], points[j][1], points[i][0] - points[j][0], points[i][1] - points[j][1], angles='xy', scale_units='xy', scale=1)
 
 plt.show()
