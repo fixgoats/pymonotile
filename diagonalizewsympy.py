@@ -30,4 +30,4 @@ D = A.subs([
     (h, sp.exp((-1j / 2) * k * (d2 + d1)))
 ])
 
-print(D.simplify().simplify())
+print(D)
