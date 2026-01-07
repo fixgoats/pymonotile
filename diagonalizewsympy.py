@@ -1,5 +1,4 @@
 import sympy as sp
-from sympy.polys.matrices import DomainMatrix
 
 a, b, c, d, e, f, g, h = sp.symbols('a b c d e f g h')
 l = sp.Symbol('lambda')
