@@ -5,4 +5,3 @@ scipy
 ipython
 PyQt6
 numba
-pybinding
